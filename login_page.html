@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Login</title>
+    <title>Minecraft ログイン</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
@@ -116,10 +116,14 @@
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="login-container">
         <h1 class="text-3xl font-bold text-gray-800 mb-6">Minecraft ログイン</h1>
-        <p class="text-gray-600 mb-8">フォームで発行されたログインコードを入力してください。</p>
+        <p class="text-gray-600 mb-8">フォームで発行されたログインコードとMinecraft IDを入力してください。</p>
 
         <div class="input-group">
             <input type="text" id="codeInput" placeholder="ログインコード" class="form-input">
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="mcidInput" placeholder="Minecraft ID" class="form-input">
         </div>
 
         <button id="loginBtn" class="btn">
@@ -131,10 +135,12 @@
     </div>
 
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxIIHymQEo9IhL1b6VLYck8Aay80eNwTv9KrBUYormHDjsU3HWmSxr35LBBDgqIbdejWA/exec";
+        // ここにGoogle Apps ScriptのデプロイされたウェブアプリURLを貼り付けてください
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxlaQuOIeDn1Id8UouiN3tIeFll1tI6sEJr5qDCo7O6I86ohwqO-8_uv4JVE51dRSE/exec";
         
         const loginBtn = document.getElementById('loginBtn');
         const codeInput = document.getElementById('codeInput');
+        const mcidInput = document.getElementById('mcidInput');
         const messageBox = document.getElementById('messageBox');
         const serverInfoDiv = document.getElementById('serverInfo');
 
@@ -213,8 +219,10 @@
         // ログインボタンのクリックイベント
         loginBtn.addEventListener('click', async () => {
             const code = codeInput.value.trim().toUpperCase();
-            if (!code) {
-                showMessage('コードを入力してください。', 'error');
+            const mcid = mcidInput.value.trim();
+
+            if (!code || !mcid) {
+                showMessage('コードとMinecraft IDを両方入力してください。', 'error');
                 return;
             }
 
@@ -224,7 +232,7 @@
             messageBox.style.display = 'none';
             serverInfoDiv.style.display = 'none';
 
-            const url = `${WEB_APP_URL}?code=${code}`;
+            const url = `${WEB_APP_URL}?code=${code}&mcid=${mcid}`;
 
             try {
                 const response = await fetch(url);
