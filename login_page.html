@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .login-container {
+            background-color: #fff;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+        }
+        .btn {
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            background-color: #3b82f6;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+        .btn:hover {
+            background-color: #2563eb;
+        }
+        .message-box {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+        }
+        .message-success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .message-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .server-info {
+            background-color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin-top: 2rem;
+            text-align: left;
+        }
+        .server-info p {
+            margin: 0.5rem 0;
+            font-family: monospace;
+            background-color: #fff;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            overflow-wrap: break-word;
+        }
+        .copy-btn {
+            width: 100%;
+            padding: 0.5rem;
+            background-color: #60a5fa;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            border: none;
+            margin-top: 0.5rem;
+        }
+        .copy-btn:hover {
+            background-color: #3b82f6;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #fff;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="login-container">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Minecraft ログイン</h1>
+        <p class="text-gray-600 mb-8">フォームで発行されたログインコードを入力してください。</p>
+
+        <div class="input-group">
+            <input type="text" id="codeInput" placeholder="ログインコード" class="form-input">
+        </div>
+
+        <button id="loginBtn" class="btn">
+            ログイン
+        </button>
+
+        <div id="messageBox" class="message-box hidden"></div>
+        <div id="serverInfo" class="server-info hidden"></div>
+    </div>
+
+    <script>
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby6ra4FQIhAKHG2v_4Mu5tk03TgMXrZK9ZxgVgzvuOgOzjf7qAfOcCcikdvLIncyRpe/exec";
+        
+        const loginBtn = document.getElementById('loginBtn');
+        const codeInput = document.getElementById('codeInput');
+        const messageBox = document.getElementById('messageBox');
+        const serverInfoDiv = document.getElementById('serverInfo');
+
+        // エラーログ出力用のユーティリティ関数
+        function logError(message, error) {
+            console.error(message, error);
+            // ユーザー向けのメッセージボックスにもエラーを表示
+            showMessage('エラーが発生しました。時間を置いて再度お試しください。', 'error');
+        }
+
+        // メッセージボックスを表示する関数
+        function showMessage(message, type) {
+            messageBox.textContent = message;
+            messageBox.className = `message-box ${type === 'success' ? 'message-success' : 'message-error'}`;
+            messageBox.style.display = 'block';
+        }
+
+        // サーバー情報を表示する関数
+        function showServerInfo(address, port) {
+            serverInfoDiv.innerHTML = `
+                <p class="font-bold text-gray-700 mb-2">ログイン成功！</p>
+                <p><strong>サーバーアドレス:</strong></p>
+                <p id="serverAddress">${address}:${port}</p>
+                <button class="copy-btn" onclick="copyToClipboard('serverAddress')">アドレスをコピー</button>
+            `;
+            serverInfoDiv.style.display = 'block';
+        }
+
+        // クリップボードにテキストをコピーする関数
+        function copyToClipboard(elementId) {
+            const textToCopy = document.getElementById(elementId).textContent;
+            
+            // navigator.clipboard.writeText を使用 (セキュリティ上の理由で一部環境で動かない可能性あり)
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showMessage('アドレスをコピーしました！', 'success');
+                }).catch(err => {
+                    // 古い方式の fallback
+                    console.error('クリップボードへのコピーに失敗しました', err);
+                    fallbackCopyTextToClipboard(textToCopy);
+                });
+            } else {
+                fallbackCopyTextToClipboard(textToCopy);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            textArea.style.width = "2em";
+            textArea.style.height = "2em";
+            textArea.style.padding = 0;
+            textArea.style.border = "none";
+            textArea.style.outline = "none";
+            textArea.style.boxShadow = "none";
+            textArea.style.background = "transparent";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showMessage('アドレスをコピーしました！', 'success');
+                } else {
+                    showMessage('コピーに失敗しました。手動でコピーしてください。', 'error');
+                }
+            } catch (err) {
+                showMessage('コピーに失敗しました。手動でコピーしてください。', 'error');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // ログインボタンのクリックイベント
+        loginBtn.addEventListener('click', async () => {
+            const code = codeInput.value.trim().toUpperCase();
+            if (!code) {
+                showMessage('コードを入力してください。', 'error');
+                return;
+            }
+
+            // ローディングスピナーの表示
+            loginBtn.innerHTML = '<div class="loading-spinner"></div>';
+            loginBtn.disabled = true;
+            messageBox.style.display = 'none';
+            serverInfoDiv.style.display = 'none';
+
+            const url = `${WEB_APP_URL}?code=${code}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showServerInfo(data.server_address, data.server_port);
+                } else {
+                    showMessage(data.message, 'error');
+                }
+            } catch (error) {
+                logError('Fetch Error:', error);
+            } finally {
+                loginBtn.innerHTML = 'ログイン';
+                loginBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
