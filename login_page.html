@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft ログイン</title>
+    <title>Minecraft Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
@@ -121,7 +121,6 @@
         <div class="input-group">
             <input type="text" id="codeInput" placeholder="ログインコード" class="form-input">
         </div>
-
         <div class="input-group">
             <input type="text" id="mcidInput" placeholder="Minecraft ID" class="form-input">
         </div>
@@ -135,8 +134,8 @@
     </div>
 
     <script>
-        // ここにGoogle Apps ScriptのデプロイされたウェブアプリURLを貼り付けてください
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxlaQuOIeDn1Id8UouiN3tIeFll1tI6sEJr5qDCo7O6I86ohwqO-8_uv4JVE51dRSE/exec";
+        // Apps ScriptのウェブアプリURLをここに貼り付けます
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzkqSGM51kcCKfNf_bpYixx548vVyiY8BneO9jOXp6sexYVDH1FxEevTG5O96hkhIok/exec";
         
         const loginBtn = document.getElementById('loginBtn');
         const codeInput = document.getElementById('codeInput');
@@ -173,23 +172,9 @@
         function copyToClipboard(elementId) {
             const textToCopy = document.getElementById(elementId).textContent;
             
-            // navigator.clipboard.writeText を使用 (セキュリティ上の理由で一部環境で動かない可能性あり)
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    showMessage('アドレスをコピーしました！', 'success');
-                }).catch(err => {
-                    // 古い方式の fallback
-                    console.error('クリップボードへのコピーに失敗しました', err);
-                    fallbackCopyTextToClipboard(textToCopy);
-                });
-            } else {
-                fallbackCopyTextToClipboard(textToCopy);
-            }
-        }
-
-        function fallbackCopyTextToClipboard(text) {
+            // document.execCommand('copy') を使用 (iFrame環境で安全なため)
             const textArea = document.createElement("textarea");
-            textArea.value = text;
+            textArea.value = textToCopy;
             textArea.style.position = "fixed";
             textArea.style.top = 0;
             textArea.style.left = 0;
@@ -203,6 +188,7 @@
             document.body.appendChild(textArea);
             textArea.focus();
             textArea.select();
+            
             try {
                 const successful = document.execCommand('copy');
                 if (successful) {
@@ -219,7 +205,7 @@
         // ログインボタンのクリックイベント
         loginBtn.addEventListener('click', async () => {
             const code = codeInput.value.trim().toUpperCase();
-            const mcid = mcidInput.value.trim();
+            const mcid = mcidInput.value.trim().toLowerCase(); // 小文字に変換して送信
 
             if (!code || !mcid) {
                 showMessage('コードとMinecraft IDを両方入力してください。', 'error');
