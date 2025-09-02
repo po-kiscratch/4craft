@@ -3,239 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Login</title>
+    <title>Minecraft Server Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            background-color: #121212;
+            color: #e0e0e0;
         }
-        .login-container {
-            background-color: #fff;
-            padding: 2.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
+        .container {
+            max-width: 420px;
         }
         .input-group {
             margin-bottom: 1.5rem;
         }
-        .input-group input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 0.5rem;
-            transition: all 0.3s ease;
+        .btn-primary {
+            background-color: #4a90e2;
+            transition: transform 0.2s;
         }
-        .input-group input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+        .btn-primary:hover {
+            transform: translateY(-2px);
         }
-        .btn {
-            width: 100%;
-            padding: 0.75rem 1.5rem;
-            background-color: #3b82f6;
-            color: #fff;
-            font-weight: bold;
-            border-radius: 0.5rem;
-            transition: background-color 0.3s ease;
-            cursor: pointer;
-            border: none;
-        }
-        .btn:hover {
-            background-color: #2563eb;
-        }
-        .message-box {
-            margin-top: 1.5rem;
+        .alert-message {
+            margin-top: 1rem;
             padding: 1rem;
             border-radius: 0.5rem;
-            font-weight: bold;
+            color: white;
+            font-weight: 500;
         }
-        .message-success {
-            background-color: #d1fae5;
-            color: #065f46;
+        .alert-success {
+            background-color: #28a745;
         }
-        .message-error {
-            background-color: #fee2e2;
-            color: #991b1b;
-        }
-        .server-info {
-            background-color: #e2e8f0;
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            margin-top: 2rem;
-            text-align: left;
-        }
-        .server-info p {
-            margin: 0.5rem 0;
-            font-family: monospace;
-            background-color: #fff;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            overflow-wrap: break-word;
-        }
-        .copy-btn {
-            width: 100%;
-            padding: 0.5rem;
-            background-color: #60a5fa;
-            color: #fff;
-            font-weight: bold;
-            border-radius: 0.5rem;
-            transition: background-color 0.3s ease;
-            cursor: pointer;
-            border: none;
-            margin-top: 0.5rem;
-        }
-        .copy-btn:hover {
-            background-color: #3b82f6;
-        }
-        .loading-spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 4px solid #fff;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .alert-error {
+            background-color: #dc3545;
         }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="login-container">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6">Minecraft ログイン</h1>
-        <p class="text-gray-600 mb-8">フォームで発行されたログインコードとMinecraft IDを入力してください。</p>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen">
+    <div class="container bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700">
+        <h1 class="text-3xl font-bold text-center mb-6 text-gray-100">サーバーログイン</h1>
+        <p class="text-center text-gray-400 mb-8">ログインコードとMinecraft ID、そしてDiscordユーザー名を入力してください。</p>
 
         <div class="input-group">
-            <input type="text" id="codeInput" placeholder="ログインコード" class="form-input">
-        </div>
-        <div class="input-group">
-            <input type="text" id="mcidInput" placeholder="Minecraft ID" class="form-input">
+            <label for="code" class="block text-gray-400 font-medium mb-2">ログインコード</label>
+            <input type="text" id="code" placeholder="例: ABC123" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-gray-200 placeholder-gray-500 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
         </div>
 
-        <button id="loginBtn" class="btn">
+        <div class="input-group">
+            <label for="mcid" class="block text-gray-400 font-medium mb-2">Minecraft ID</label>
+            <input type="text" id="mcid" placeholder="例: Notch" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-gray-200 placeholder-gray-500 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+        </div>
+
+        <div class="input-group">
+            <label for="discordUsername" class="block text-gray-400 font-medium mb-2">Discordユーザー名</label>
+            <input type="text" id="discordUsername" placeholder="例: MyUsername#1234" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-gray-200 placeholder-gray-500 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+        </div>
+        
+        <button id="loginButton" class="w-full btn-primary text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
             ログイン
         </button>
 
-        <div id="messageBox" class="message-box hidden"></div>
-        <div id="serverInfo" class="server-info hidden"></div>
+        <div id="messageBox" class="alert-message hidden"></div>
+        
+        <div id="serverInfo" class="hidden mt-8 text-center bg-gray-700 p-6 rounded-xl border border-gray-600 shadow-md">
+            <h2 class="text-xl font-bold text-green-400 mb-4">✅ ログイン成功！</h2>
+            <p class="text-gray-300">以下の情報でサーバーに接続できます。</p>
+            <div class="mt-4 p-4 rounded-lg bg-gray-800 border border-gray-700">
+                <p class="font-bold text-gray-100">サーバーアドレス</p>
+                <code id="serverAddress" class="block mt-1 text-blue-400 text-lg sm:text-2xl font-mono break-all"></code>
+            </div>
+            <div class="mt-4 p-4 rounded-lg bg-gray-800 border border-gray-700">
+                <p class="font-bold text-gray-100">サーバーポート</p>
+                <code id="serverPort" class="block mt-1 text-blue-400 text-lg sm:text-2xl font-mono break-all"></code>
+            </div>
+            <button id="copyButton" class="mt-6 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-200 focus:outline-none">
+                アドレスをコピー
+            </button>
+        </div>
     </div>
 
     <script>
-        // Apps ScriptのウェブアプリURLをここに貼り付けます
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwwAHQ5GRnGOhaUFOmIbyPCeNKhU-ZDPsKz743jgpJuYHuu03Xbd1iKQYQsVQG9Z0fO/exec";
-        
-        const loginBtn = document.getElementById('loginBtn');
-        const codeInput = document.getElementById('codeInput');
-        const mcidInput = document.getElementById('mcidInput');
-        const messageBox = document.getElementById('messageBox');
-        const serverInfoDiv = document.getElementById('serverInfo');
+        // Google Apps ScriptのウェブアプリURLをここに貼り付けます
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxNIF5ggVf7xbVvrwaJ1fWAuaeqYCh_gGt-Gx3MAtv5mDEtCH8u2JqrZx20VmoMQEQn/exec";
 
-        // エラーログ出力用のユーティリティ関数
-        function logError(message, error) {
-            console.error(message, error);
-            // ユーザー向けのメッセージボックスにもエラーを表示
-            showMessage('エラーが発生しました。時間を置いて再度お試しください。', 'error');
-        }
-
-        // メッセージボックスを表示する関数
-        function showMessage(message, type) {
-            messageBox.textContent = message;
-            messageBox.className = `message-box ${type === 'success' ? 'message-success' : 'message-error'}`;
-            messageBox.style.display = 'block';
-        }
-
-        // サーバー情報を表示する関数
-        function showServerInfo(address, port) {
-            serverInfoDiv.innerHTML = `
-                <p class="font-bold text-gray-700 mb-2">ログイン成功！</p>
-                <p><strong>サーバーアドレス:</strong></p>
-                <p id="serverAddress">${address}:${port}</p>
-                <button class="copy-btn" onclick="copyToClipboard('serverAddress')">アドレスをコピー</button>
-            `;
-            serverInfoDiv.style.display = 'block';
-        }
-
-        // クリップボードにテキストをコピーする関数
-        function copyToClipboard(elementId) {
-            const textToCopy = document.getElementById(elementId).textContent;
+        document.getElementById('loginButton').addEventListener('click', async () => {
+            const code = document.getElementById('code').value.trim().toUpperCase();
+            const mcid = document.getElementById('mcid').value.trim().toLowerCase();
+            const discordUsername = document.getElementById('discordUsername').value.trim();
+            const messageBox = document.getElementById('messageBox');
+            const serverInfoBox = document.getElementById('serverInfo');
             
-            // document.execCommand('copy') を使用 (iFrame環境で安全なため)
-            const textArea = document.createElement("textarea");
-            textArea.value = textToCopy;
-            textArea.style.position = "fixed";
-            textArea.style.top = 0;
-            textArea.style.left = 0;
-            textArea.style.width = "2em";
-            textArea.style.height = "2em";
-            textArea.style.padding = 0;
-            textArea.style.border = "none";
-            textArea.style.outline = "none";
-            textArea.style.boxShadow = "none";
-            textArea.style.background = "transparent";
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showMessage('アドレスをコピーしました！', 'success');
-                } else {
-                    showMessage('コピーに失敗しました。手動でコピーしてください。', 'error');
-                }
-            } catch (err) {
-                showMessage('コピーに失敗しました。手動でコピーしてください。', 'error');
-            }
-            document.body.removeChild(textArea);
-        }
+            messageBox.classList.add('hidden');
+            serverInfoBox.classList.add('hidden');
 
-        // ログインボタンのクリックイベント
-        loginBtn.addEventListener('click', async () => {
-            const code = codeInput.value.trim().toUpperCase();
-            const mcid = mcidInput.value.trim().toLowerCase(); // 小文字に変換して送信
-
-            if (!code || !mcid) {
-                showMessage('コードとMinecraft IDを両方入力してください。', 'error');
+            if (!code || !mcid || !discordUsername) {
+                showMessage('すべての項目を入力してください。', 'error');
                 return;
             }
 
-            // ローディングスピナーの表示
-            loginBtn.innerHTML = '<div class="loading-spinner"></div>';
-            loginBtn.disabled = true;
-            messageBox.style.display = 'none';
-            serverInfoDiv.style.display = 'none';
-
-            const url = `${WEB_APP_URL}?code=${code}&mcid=${mcid}`;
-
             try {
-                const response = await fetch(url);
+                const response = await fetch(`${WEB_APP_URL}?code=${encodeURIComponent(code)}&mcid=${encodeURIComponent(mcid)}&discordUsername=${encodeURIComponent(discordUsername)}`);
                 const data = await response.json();
 
                 if (data.status === 'success') {
+                    showMessage('ログインに成功しました！', 'success');
                     showServerInfo(data.server_address, data.server_port);
                 } else {
                     showMessage(data.message, 'error');
                 }
             } catch (error) {
-                logError('Fetch Error:', error);
-            } finally {
-                loginBtn.innerHTML = 'ログイン';
-                loginBtn.disabled = false;
+                console.error('Fetch Error:', error);
+                showMessage('通信エラーが発生しました。しばらくしてから再度お試しください。', 'error');
             }
         });
+
+        document.getElementById('copyButton').addEventListener('click', () => {
+            const serverAddress = document.getElementById('serverAddress').textContent;
+            navigator.clipboard.writeText(serverAddress)
+                .then(() => {
+                    showMessage('サーバーアドレスをクリップボードにコピーしました！', 'success');
+                })
+                .catch(err => {
+                    console.error('コピー失敗:', err);
+                    showMessage('アドレスのコピーに失敗しました。手動でコピーしてください。', 'error');
+                });
+        });
+
+        function showMessage(message, type) {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = message;
+            messageBox.classList.remove('hidden', 'alert-success', 'alert-error');
+            if (type === 'success') {
+                messageBox.classList.add('alert-success');
+            } else {
+                messageBox.classList.add('alert-error');
+            }
+        }
+
+        function showServerInfo(address, port) {
+            document.getElementById('serverAddress').textContent = address;
+            document.getElementById('serverPort').textContent = port;
+            document.getElementById('serverInfo').classList.remove('hidden');
+        }
     </script>
 </body>
 </html>
