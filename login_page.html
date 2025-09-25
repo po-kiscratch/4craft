@@ -3,149 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Server Login</title>
+    <title>サーバーログイン</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
-        }
-        .container {
-            max-width: 420px;
-        }
-        .input-group {
-            margin-bottom: 1.5rem;
-        }
-        .btn-primary {
-            background-color: #4a90e2;
-            transition: transform 0.2s;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-        }
-        .alert-message {
-            margin-top: 1rem;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            color: white;
-            font-weight: 500;
-        }
-        .alert-success {
-            background-color: #28a745;
-        }
-        .alert-error {
-            background-color: #dc3545;
+            background-color: #1a202c;
+            color: #e2e8f0;
         }
     </style>
 </head>
-<body class="bg-gray-900 flex items-center justify-center min-h-screen">
-    <div class="container bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700">
-        <h1 class="text-3xl font-bold text-center mb-6 text-gray-100">サーバーログイン</h1>
-        <p class="text-center text-gray-400 mb-8">ログインコードとMinecraft ID、そしてDiscordユーザー名を入力してください。</p>
+<body class="flex items-center justify-center min-h-screen p-4">
 
-        <div class="input-group">
-            <label for="code" class="block text-gray-400 font-medium mb-2">ログインコード</label>
-            <input type="text" id="code" placeholder="例: ABC123" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-gray-200 placeholder-gray-500 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+<div class="w-full max-w-md bg-gray-800 rounded-xl shadow-lg p-8 space-y-6 transform transition-all duration-500 hover:scale-105">
+    <div id="status-message" class="hidden p-4 rounded-lg text-white font-bold transition-opacity duration-300"></div>
+
+    <div id="login-container" class="space-y-6">
+        <div class="text-center">
+            <h1 class="text-3xl font-bold mb-2">サーバーログイン</h1>
+            <p class="text-gray-400">ログインコードとMinecraft ID、そしてDiscordユーザー名を入力してください。</p>
         </div>
 
-        <div class="input-group">
-            <label for="mcid" class="block text-gray-400 font-medium mb-2">Minecraft ID</label>
-            <input type="text" id="mcid" placeholder="例: Notch" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-gray-200 placeholder-gray-500 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+        <div>
+            <label for="code" class="block text-sm font-medium text-gray-400">ログインコード</label>
+            <input type="text" id="code" name="code" class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="例: ABC123" required>
         </div>
 
-        <div class="input-group">
-            <label for="discordUsername" class="block text-gray-400 font-medium mb-2">Discordユーザー名</label>
-            <input type="text" id="discordUsername" placeholder="例: MyUsername#1234" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-gray-200 placeholder-gray-500 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+        <div>
+            <label for="mcid" class="block text-sm font-medium text-gray-400">Minecraft ID</label>
+            <input type="text" id="mcid" name="mcid" class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="例: Notch" required>
         </div>
-        
-        <button id="loginButton" class="w-full btn-primary text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-            ログイン
-        </button>
 
-        <div id="messageBox" class="alert-message hidden"></div>
-        
-        <div id="serverInfo" class="hidden mt-8 text-center bg-gray-700 p-6 rounded-xl border border-gray-600 shadow-md">
-            <h2 class="text-xl font-bold text-green-400 mb-4">✅ ログイン成功！</h2>
-            <p class="text-gray-300">以下の情報でサーバーに接続できます。</p>
-            <div class="mt-4 p-4 rounded-lg bg-gray-800 border border-gray-700">
-                <p class="font-bold text-gray-100">サーバーアドレス</p>
-                <code id="serverAddress" class="block mt-1 text-blue-400 text-lg sm:text-2xl font-mono break-all"></code>
-            </div>
-            <div class="mt-4 p-4 rounded-lg bg-gray-800 border border-gray-700">
-                <p class="font-bold text-gray-100">サーバーポート</p>
-                <code id="serverPort" class="block mt-1 text-blue-400 text-lg sm:text-2xl font-mono break-all"></code>
-            </div>
-            <button id="copyButton" class="mt-6 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-200 focus:outline-none">
-                アドレスをコピー
-            </button>
+        <div>
+            <label for="discordUsername" class="block text-sm font-medium text-gray-400">Discordユーザー名</label>
+            <input type="text" id="discordUsername" name="discordUsername" class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="例: MyUsername#1234" required>
         </div>
+
+        <button id="login-button" class="w-full py-3 px-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors duration-300 transform hover:scale-105">ログイン</button>
     </div>
 
-    <script>
-        // Google Apps ScriptのウェブアプリURLをここに貼り付けます
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxNIF5ggVf7xbVvrwaJ1fWAuaeqYCh_gGt-Gx3MAtv5mDEtCH8u2JqrZx20VmoMQEQn/exec";
-
-        document.getElementById('loginButton').addEventListener('click', async () => {
-            const code = document.getElementById('code').value.trim().toUpperCase();
-            const mcid = document.getElementById('mcid').value.trim().toLowerCase();
-            const discordUsername = document.getElementById('discordUsername').value.trim();
-            const messageBox = document.getElementById('messageBox');
-            const serverInfoBox = document.getElementById('serverInfo');
+    <div id="success-container" class="hidden text-center space-y-6">
+        <div class="bg-gray-700 rounded-lg p-6 space-y-4">
+            <p class="text-xl font-bold text-green-400 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                ログイン成功！
+            </p>
+            <p class="text-gray-400">以下の情報でサーバーに接続できます。</p>
             
-            messageBox.classList.add('hidden');
-            serverInfoBox.classList.add('hidden');
+            <a id="server-link" href="#" target="_blank" class="w-full py-3 px-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors duration-300 transform hover:scale-105 inline-block">ログイン方法を見る</a>
+        </div>
+    </div>
+</div>
 
-            if (!code || !mcid || !discordUsername) {
-                showMessage('すべての項目を入力してください。', 'error');
-                return;
-            }
+<script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxNIF5ggVf7xbVvrwaJ1fWAuaeqYCh_gGt-Gx3MAtv5mDEtCH8u2JqrZx20VmoMQEQn/exec";
 
-            try {
-                const response = await fetch(`${WEB_APP_URL}?code=${encodeURIComponent(code)}&mcid=${encodeURIComponent(mcid)}&discordUsername=${encodeURIComponent(discordUsername)}`);
-                const data = await response.json();
+    const statusMessage = document.getElementById('status-message');
+    const loginContainer = document.getElementById('login-container');
+    const successContainer = document.getElementById('success-container');
+    const loginButton = document.getElementById('login-button');
+    const codeInput = document.getElementById('code');
+    const mcidInput = document.getElementById('mcid');
+    const discordUsernameInput = document.getElementById('discordUsername');
+    const serverLink = document.getElementById('server-link');
 
-                if (data.status === 'success') {
-                    showMessage('ログインに成功しました！', 'success');
-                    showServerInfo(data.server_address, data.server_port);
-                } else {
-                    showMessage(data.message, 'error');
-                }
-            } catch (error) {
-                console.error('Fetch Error:', error);
-                showMessage('通信エラーが発生しました。しばらくしてから再度お試しください。', 'error');
-            }
-        });
+    loginButton.addEventListener('click', async () => {
+        const code = codeInput.value.trim();
+        const mcid = mcidInput.value.trim();
+        const discordUsername = discordUsernameInput.value.trim();
 
-        document.getElementById('copyButton').addEventListener('click', () => {
-            const serverAddress = document.getElementById('serverAddress').textContent;
-            navigator.clipboard.writeText(serverAddress)
-                .then(() => {
-                    showMessage('サーバーアドレスをクリップボードにコピーしました！', 'success');
-                })
-                .catch(err => {
-                    console.error('コピー失敗:', err);
-                    showMessage('アドレスのコピーに失敗しました。手動でコピーしてください。', 'error');
-                });
-        });
+        if (!code || !mcid || !discordUsername) {
+            displayMessage('全ての情報を入力してください。', 'bg-red-500');
+            return;
+        }
 
-        function showMessage(message, type) {
-            const messageBox = document.getElementById('messageBox');
-            messageBox.textContent = message;
-            messageBox.classList.remove('hidden', 'alert-success', 'alert-error');
-            if (type === 'success') {
-                messageBox.classList.add('alert-success');
+        displayMessage('認証中...', 'bg-gray-500');
+
+        const url = `${WEB_APP_URL}?code=${encodeURIComponent(code)}&mcid=${encodeURIComponent(mcid)}&discordUsername=${encodeURIComponent(discordUsername)}`;
+        
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                displayMessage('ログインに成功しました！', 'bg-green-500');
+                loginContainer.classList.add('hidden');
+                successContainer.classList.remove('hidden');
+                serverLink.href = data.server_info_url;
             } else {
-                messageBox.classList.add('alert-error');
+                displayMessage(data.message, 'bg-red-500');
             }
+        } catch (error) {
+            console.error('Error:', error);
+            displayMessage('認証中にエラーが発生しました。', 'bg-red-500');
         }
+    });
 
-        function showServerInfo(address, port) {
-            document.getElementById('serverAddress').textContent = address;
-            document.getElementById('serverPort').textContent = port;
-            document.getElementById('serverInfo').classList.remove('hidden');
-        }
-    </script>
+    function displayMessage(message, colorClass) {
+        statusMessage.textContent = message;
+        statusMessage.className = `block p-4 rounded-lg text-white font-bold text-center transition-opacity duration-300 ${colorClass}`;
+        statusMessage.classList.remove('hidden');
+    }
+</script>
+
 </body>
 </html>
